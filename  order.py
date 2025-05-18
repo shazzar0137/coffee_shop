@@ -1,43 +1,44 @@
-from customer import Customer
-from coffee import Coffee
 
 class Order:
-    _all_orders = []
+    _all = []
 
-    def __init__(self, customer: Customer, coffee: Coffee, price: float):
+    def __init__(self, customer, coffee, price):
         self.customer = customer
         self.coffee = coffee
         self.price = price
-        Order._all_orders.append(self)
+        Order._all.append(self)
 
     @property
-    def customer(self) -> Customer:
+    def customer(self):
         return self._customer
 
     @customer.setter
-    def customer(self, value: Customer):
-        if not isinstance(value, Customer):
-            raise ValueError("Customer must be a Customer instance")
-        self._customer = value
+    def customer(self, value):
+        from customer import Customer
+        if isinstance(value, Customer):
+            self._customer = value
+        else:
+            raise TypeError("Customer must be an instance of Customer class.")
 
     @property
-    def coffee(self) -> Coffee:
+    def coffee(self):
         return self._coffee
 
     @coffee.setter
-    def coffee(self, value: Coffee):
-        if not isinstance(value, Coffee):
-            raise ValueError("Coffee must be a Coffee instance")
-        self._coffee = value
+    def coffee(self, value):
+        from coffee import Coffee
+        if isinstance(value, Coffee):
+            self._coffee = value
+        else:
+            raise TypeError("Coffee must be an instance of Coffee class.")
 
     @property
-    def price(self) -> float:
+    def price(self):
         return self._price
 
     @price.setter
-    def price(self, value: float):
-        if not isinstance(value, (int, float)):
-            raise ValueError("Price must be a number")
-        if not (1.0 <= value <= 10.0):
-            raise ValueError("Price must be between 1.0 and 10.0")
-        self._price = float(value)
+    def price(self, value):
+        if isinstance(value, float) and 1.0 <= value <= 10.0:
+            self._price = value
+        else:
+            raise ValueError("Price must be a float between 1.0 and 10.0.")
