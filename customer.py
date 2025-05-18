@@ -1,45 +1,40 @@
-from order import Order  # Imported inside methods to avoid circular imports
+
+from order import Order
 
 class Customer:
-    def __init__(self, name: str):
-        self._name = None
-        self.name = name  # Triggers the setter
+    _all = []
+
+    def __init__(self, name):
+        self.name = name
+        Customer._all.append(self)
 
     @property
-    def name(self) -> str:
+    def name(self):
         return self._name
 
     @name.setter
-    def name(self, value: str):
-        if not isinstance(value, str):
-            raise ValueError("Name must be a string")
-        if not (1 <= len(value) <= 15):
-            raise ValueError("Name must be between 1 and 15 characters")
-        self._name = value
+    def name(self, value):
+        if isinstance(value, str) and 1 <= len(value) <= 15:
+            self._name = value
+        else:
+            raise ValueError("Customer name must be a string between 1 and 15 characters.")
 
     def orders(self):
-        from order import Order
-        return [order for order in Order._all_orders if order.customer == self]
+        return [order for order in Order._all if order.customer == self]
 
     def coffees(self):
-        return list({order.coffee for order in self.orders()})
+        return list(set(order.coffee for order in self.orders()))
 
-    def create_order(self, coffee, price: float):
-        from order import Order
+    def create_order(self, coffee, price):
         return Order(self, coffee, price)
 
     @classmethod
     def most_aficionado(cls, coffee):
-        from order import Order
-        orders = [order for order in Order._all_orders if order.coffee == coffee]
-        if not orders:
-            return None
-        customer_totals = {}
-        for order in orders:
-            customer = order.customer
-            customer_totals[customer] = customer_totals.get(customer, 0) + order.price
-        if not customer_totals:
-            return None
-        max_total = max(customer_totals.values())
-        max_customers = [cust for cust, total in customer_totals.items() if total == max_total]
-        return max_customers[0] if max_customers else None
+        max_spent = 0
+        top_customer = None
+        for customer in cls._all:
+            spent = sum(order.price for order in customer.orders() if order.coffee == coffee)
+            if spent > max_spent:
+                max_spent = spent
+                top_customer = customer
+        return top_customer
