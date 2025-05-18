@@ -27,7 +27,7 @@ The system implements proper validation, relationships, and aggregation methods 
 
 1. **Clone the Repository:**
    ```bash
-   git clone [your-repository-url]
+   git clone git@github.com:shazzar0137/coffee_shop.git
    cd coffee_shop
    ```
 
